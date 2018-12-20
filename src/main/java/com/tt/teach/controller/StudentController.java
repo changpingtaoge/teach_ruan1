@@ -3,13 +3,17 @@ package com.tt.teach.controller;
 import com.tt.teach.pojo.Student;
 import com.tt.teach.service.StudentService;
 import com.tt.teach.utils.BaseController;
+import com.tt.teach.utils.JsonResult;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/stu")
@@ -32,6 +36,12 @@ public class StudentController extends BaseController{
         }
         return REDIRECT+"/stu/login";
     }
+    //接口：http://localhost:8080/stu/student
+    @RequestMapping("/student")
+    public String student() {
+        return "/student/student";
+    }
+
 
     //接口：http://localhost:8080/stu/doLogin
     @RequestMapping(value = "/doLogin",method = RequestMethod.POST)
@@ -54,5 +64,41 @@ public class StudentController extends BaseController{
     public String logout() {
         getSession().removeAttribute(SESSION_KEY);
         return REDIRECT+"/stu/login";
+    }
+
+    @RequestMapping(value = "/findStuAll",method = RequestMethod.GET)
+    @ResponseBody
+    public Object findStuAll() {
+        List<Student> list = studentService.findStuAll();
+        return list;
+    }
+
+    @RequestMapping(value = "/updateStu",method = RequestMethod.POST)
+    public String updateStu() {
+        String xuehao = getRequest().getParameter("stuNo");
+        Integer stuNo = Integer.parseInt(xuehao);
+        String stuName = getRequest().getParameter("stuName");
+        String stuPwd = getRequest().getParameter("stuPwd");
+        String stuPhone = getRequest().getParameter("stuPhone");
+        Student student = new Student();
+        student.setStudentName(stuName);
+        student.setPhone(stuPhone);
+        student.setLoginPwd(stuPwd);
+        student.setStudentNo(stuNo);
+        int result = studentService.updateStu(student);
+        if (result>0){
+            return FORWARD+"/stu/student";
+        }
+        return FORWARD+"/stu/student";
+    }
+
+    @RequestMapping(value = "/deleteStu/{stuNo}",method = RequestMethod.DELETE)
+    @ResponseBody
+    public Object deleteStu(@PathVariable Integer stuNo) {
+        int result = studentService.deleteStu(stuNo);
+        if (result>0){
+            return JsonResult.ok("删除成功！",result);
+        }
+        return JsonResult.no("删除失败！",result);
     }
 }
