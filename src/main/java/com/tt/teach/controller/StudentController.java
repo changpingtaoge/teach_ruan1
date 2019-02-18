@@ -21,6 +21,9 @@ public class StudentController extends BaseController{
     @Resource
     private StudentService studentService;
 
+
+
+
     //接口：http://localhost:8080/stu/login
     @RequestMapping("/login")
     public String login() {
@@ -101,4 +104,15 @@ public class StudentController extends BaseController{
         }
         return JsonResult.no("删除失败！",result);
     }
+
+    @RequestMapping(value = "/getStuByNo/{studentNo}",method = RequestMethod.GET)
+    @ResponseBody
+    public Object getStuByNo(@PathVariable Integer studentNo) {
+        Student student = studentService.getStuByNo(studentNo);
+        if (student!=null){
+            return JsonResult.ok("有该学生",student);
+        }
+        return JsonResult.no("没有该学生",student);
+    }
+
 }

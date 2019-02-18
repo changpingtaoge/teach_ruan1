@@ -32,4 +32,8 @@ public class StudentServiceImpl implements StudentService{
     public int deleteStu(Integer stuNo) {
         return studentDao.deleteStu(stuNo);
     }
+
+    public Student getStuByNo(Integer studentNo) {
+        return studentDao.getStuByNo(studentNo);
+    }
 }

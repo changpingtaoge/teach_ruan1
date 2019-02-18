@@ -25,4 +25,7 @@ public interface StudentDao {
 
     @Delete("delete from student where studentNo = #{stuNo}")
     int deleteStu(Integer stuNo);
+
+    @Select("select * from student where studentNo = #{studentNo}")
+    Student getStuByNo(Integer studentNo);
 }
